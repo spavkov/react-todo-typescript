@@ -1,5 +1,5 @@
 import * as React from "react";
-import TodoList from "../components/TodoList";
+import TodoListView from "../components/TodoListView";
 import { TodoItem } from "../components/model/TodoItem";
 
 interface IIndexProps {
@@ -13,7 +13,7 @@ const IndexPage: React.FunctionComponent<IIndexProps> = ({Title}) => {
         new TodoItem("Item 2", false),
     ];
 
-    return (<TodoList Items={items} />);
+    return (<TodoListView Items={items} />);
 };
 
 export default IndexPage;
