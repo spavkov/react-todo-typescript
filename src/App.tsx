@@ -1,7 +1,8 @@
-import React from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
-import './App.css';
-import IndexPage from './pages/IndexPage';
+import React from "react";
+import {BrowserRouter as Router, Route, Link} from "react-router-dom";
+import "./App.css";
+import IndexPage from "./pages/IndexPage";
+import AboutPage from "./pages/AboutPage";
 
 const App: React.FC = () => {
   return (
@@ -15,17 +16,14 @@ const App: React.FC = () => {
             <li>
               <Link to="/about/">About</Link>
             </li>
-            <li>
-              <Link to="/users/">Users</Link>
-            </li>
           </ul>
         </nav>
 
         <Route path="/" exact component={IndexPage} />
-        {/* <Route path="/about/" component={About} /> */}
+        <Route path="/about/" component={AboutPage} />
       </div>
     </Router>
   );
-}
+};
 
 export default App;
