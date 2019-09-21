@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
-import { TodoItemsDispatchAction, TodoItemsContext, IStateAndDispatcher } from "./context/TodoItemsContext";
+import { TodoItemsDispatchAction, TodoItemsContext } from "./context/TodoItemsContext";
 import { ITodoItemsContext } from "./context/ITodoItemsContext";
 import TodoItemView from "./TodoItemView";
+import { IStateAndDispatcher } from "./context/GenericContext";
 
 const TodoListView: React.FunctionComponent = () => {
 
@@ -11,7 +12,7 @@ const TodoListView: React.FunctionComponent = () => {
         <div>
             {
             context != null && context.State.Items != null && context.State.Items.length > 0 ?
-            context.State.Items.map((item, index) => <TodoItemView Index={index} Item={item} /> ) : <div>"no items"</div>
+            context.State.Items.map((item, index) => <TodoItemView Index={index} Item={item} ItemId={item.id} /> ) : <div>"no items"</div>
             }
         </div>
         );

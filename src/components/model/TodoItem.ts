@@ -1,10 +1,9 @@
-class TodoItem {
-    public Title: string;
-    public Done: boolean;
+import { Guid } from "guid-typescript";
 
-    constructor(title: string, done: boolean) {
-        this.Title = title;
-        this.Done = done;
+class TodoItem {
+    public readonly id: Guid;
+    constructor(public title: string, public done: boolean = false) {
+        this.id = Guid.create();
     }
 }
 

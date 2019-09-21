@@ -1,7 +1,8 @@
 import React, {useState, useContext} from "react";
-import { TodoItemsContext, TodoItemsDispatchAction, TodoItemsActionType, IStateAndDispatcher } from "./context/TodoItemsContext";
+import { TodoItemsContext, TodoItemsDispatchAction, TodoItemsActionType} from "./context/TodoItemsContext";
 import { TodoItem } from "./model/TodoItem";
 import { ITodoItemsContext } from "./context/ITodoItemsContext";
+import { IStateAndDispatcher } from "./context/GenericContext";
 
 const AddTodoItem : React.FunctionComponent = () => {
 

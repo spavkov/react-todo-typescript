@@ -1,29 +1,73 @@
 import React from "react";
 import { TodoItem } from "../model/TodoItem";
 import { ITodoItemsContext } from "./ITodoItemsContext";
+import { IStateAndDispatcher, IGenericContextProps } from "./GenericContext";
+import { Guid } from "guid-typescript";
 
 enum TodoItemsActionType {
     Add,
-    Delete
+    Delete,
+    ToggleDone
 }
 
-type TodoItemsContextProps = {
-    children: React.ReactNode,
-    initialState: ITodoItemsContext,
-    reducer: (state: ITodoItemsContext, action: TodoItemsDispatchAction) => ITodoItemsContext
-};
-
 export class TodoItemsDispatchAction {
-    constructor(public type: TodoItemsActionType, public payload: TodoItem | null)
+    constructor(public type: TodoItemsActionType, public payload: TodoItem | Guid | null)
     {
 
     }
 }
 
-export interface IStateAndDispatcher<T,V> {
-    State: T;
-    Dispatcher: React.Dispatch<V> | null;
-}
+const todoItemsContext : ITodoItemsContext = {
+    Items: [
+      new TodoItem("item1", true),
+      new TodoItem("item2"),
+    ],
+    IsBusy: false,
+  };
+
+const todoItemsReducer = (state: ITodoItemsContext, action: TodoItemsDispatchAction): ITodoItemsContext => {
+    switch (action.type) {
+        case TodoItemsActionType.Add: {
+            if (action.payload as TodoItem != null) {
+                state.Items.push(action.payload as TodoItem);
+            } else {
+                throw new Error("null payload in TodoItemsDispatchAction -> add");
+            }
+            return {
+                Items: state.Items,
+                IsBusy: state.IsBusy};
+        }
+        case TodoItemsActionType.Delete: {
+            if (action.payload as Guid != null) {
+                const items = state.Items.filter(item => item.id !== action.payload as Guid);
+                return {
+                    Items: items,
+                    IsBusy : state.IsBusy
+                };
+            } else {
+                throw new Error("null payload in TodoItemsDispatchAction -> delete");
+            }
+        }
+
+        case TodoItemsActionType.ToggleDone: {
+            if (action.payload as Guid != null) {
+                for (let item of state.Items)
+                {
+                    if (item.id === (action.payload as Guid))
+                    {
+                        item.done = item.done;
+                    }
+                }
+                return {
+                    Items: state.Items,
+                    IsBusy : state.IsBusy
+                };
+            } else {
+                throw new Error("null payload in TodoItemsDispatchAction -> delete");
+            }
+        }        
+    }
+  };
 
 const TodoItemsContext = React.createContext<IStateAndDispatcher<ITodoItemsContext, TodoItemsDispatchAction>>(
     {State : {
@@ -31,37 +75,11 @@ const TodoItemsContext = React.createContext<IStateAndDispatcher<ITodoItemsConte
         IsBusy: false
     }, Dispatcher : null});
 
-function todoItemsReducer(state: ITodoItemsContext, action: TodoItemsDispatchAction): ITodoItemsContext {
-    switch (action.type) {
-        case TodoItemsActionType.Add: {
-            if (action.payload != null) {
-                state.Items.push(action.payload);
-            } else {
-                throw new Error("null payload in TodoItemsDispatchAction -> add");
-            }
-            return {
-                Items: state.Items,
-                IsBusy: false};
-        }
-        case TodoItemsActionType.Delete: {
-            if (action.payload != null) {
-                state.Items = state.Items.filter(item => item !== action.payload);
-            } else {
-                throw new Error("null payload in TodoItemsDispatchAction -> delete");
-            }
-            return state;
-        }
-    }
-}
-
-function TodoItemsContextProvider(props: TodoItemsContextProps) {
-    const [state, dispatch] = React.useReducer(todoItemsReducer, props.initialState);
+function TodoItemsContextProvider(props : IGenericContextProps) {
+    const [state, dispatch] = React.useReducer(todoItemsReducer, todoItemsContext);
     return (<TodoItemsContext.Provider value={{State: state, Dispatcher: dispatch}}>
             {props.children}
     </TodoItemsContext.Provider>);
 }
 
 export { TodoItemsActionType, TodoItemsContextProvider, TodoItemsContext};
-
-
-
