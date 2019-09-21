@@ -7,7 +7,11 @@ enum TodoItemsActionType {
     Delete
 }
 
-type TodoItemsContextProps = {children: React.ReactNode, initialState: ITodoItemsContext};
+type TodoItemsContextProps = {
+    children: React.ReactNode,
+    initialState: ITodoItemsContext,
+    reducer: (state: ITodoItemsContext, action: TodoItemsDispatchAction) => ITodoItemsContext
+};
 
 export class TodoItemsDispatchAction {
     constructor(public type: TodoItemsActionType, public payload: TodoItem | null)
@@ -16,11 +20,16 @@ export class TodoItemsDispatchAction {
     }
 }
 
-type Dispatch = (action: TodoItemsDispatchAction) => void;
+export interface IStateAndDispatcher<T,V> {
+    State: T;
+    Dispatcher: React.Dispatch<V> | null;
+}
 
-const TodoItemsContext = React.createContext<ITodoItemsContext | undefined>(undefined);
-const TodoItemsDispatcherContext = React.createContext<Dispatch | undefined>(undefined);
-
+const TodoItemsContext = React.createContext<IStateAndDispatcher<ITodoItemsContext, TodoItemsDispatchAction>>(
+    {State : {
+        Items: [],
+        IsBusy: false
+    }, Dispatcher : null});
 
 function todoItemsReducer(state: ITodoItemsContext, action: TodoItemsDispatchAction): ITodoItemsContext {
     switch (action.type) {
@@ -47,30 +56,12 @@ function todoItemsReducer(state: ITodoItemsContext, action: TodoItemsDispatchAct
 
 function TodoItemsContextProvider(props: TodoItemsContextProps) {
     const [state, dispatch] = React.useReducer(todoItemsReducer, props.initialState);
-    return (<TodoItemsContext.Provider value={state}>
-        <TodoItemsDispatcherContext.Provider value={dispatch}>
+    return (<TodoItemsContext.Provider value={{State: state, Dispatcher: dispatch}}>
             {props.children}
-        </TodoItemsDispatcherContext.Provider>
     </TodoItemsContext.Provider>);
 }
 
-function useTodoItemsState(): ITodoItemsContext | undefined {
-    const context : ITodoItemsContext | undefined = React.useContext(TodoItemsContext);
-    if (context === undefined) {
-        throw new Error('useTodoItemsState must be used within a TodoItemsContextProvider')
-      }
-    return context;
-}
-
-function useTodoItemsDispatch() {
-    const context = React.useContext(TodoItemsDispatcherContext);
-    if (context === undefined) {
-        throw new Error('useTodoItemsDispatch must be used within a TodoItemsContextProvider')
-      }
-    return context;
-}
-
-export { TodoItemsActionType, useTodoItemsState, TodoItemsContextProvider, useTodoItemsDispatch };
+export { TodoItemsActionType, TodoItemsContextProvider, TodoItemsContext};
 
 
 

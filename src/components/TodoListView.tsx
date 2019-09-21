@@ -1,17 +1,17 @@
-import * as React from "react";
-import { useTodoItemsState } from "./context/TodoItemsContext";
+import React, { useContext } from "react";
+import { TodoItemsDispatchAction, TodoItemsContext, IStateAndDispatcher } from "./context/TodoItemsContext";
 import { ITodoItemsContext } from "./context/ITodoItemsContext";
 import TodoItemView from "./TodoItemView";
 
 const TodoListView: React.FunctionComponent = () => {
 
-    const context : ITodoItemsContext | undefined = useTodoItemsState();
+    const context : IStateAndDispatcher<ITodoItemsContext, TodoItemsDispatchAction> | null = useContext(TodoItemsContext);
 
     return (
         <div>
             {
-            context != null && context.Items != null && context.Items.length > 0 ?
-            context.Items.map((item, index) => <TodoItemView Index={index} Item={item} /> ) : <div>"no items"</div>
+            context != null && context.State.Items != null && context.State.Items.length > 0 ?
+            context.State.Items.map((item, index) => <TodoItemView Index={index} Item={item} /> ) : <div>"no items"</div>
             }
         </div>
         );

@@ -5,7 +5,7 @@ import IndexPage from "./pages/IndexPage";
 import AboutPage from "./pages/AboutPage";
 import { ITodoItemsContext } from "./components/context/ITodoItemsContext";
 import { TodoItem } from "./components/model/TodoItem";
-import { TodoItemsContextProvider } from "./components/context/TodoItemsContext";
+import { TodoItemsContextProvider, TodoItemsActionType, TodoItemsDispatchAction } from "./components/context/TodoItemsContext";
 
 const todoItemsContext : ITodoItemsContext = {
   Items: [
@@ -15,9 +15,32 @@ const todoItemsContext : ITodoItemsContext = {
   IsBusy: false,
 };
 
+const todoItemsReducer = (state: ITodoItemsContext, action: TodoItemsDispatchAction): ITodoItemsContext => {
+  switch (action.type) {
+      case TodoItemsActionType.Add: {
+          if (action.payload != null) {
+              state.Items.push(action.payload);
+          } else {
+              throw new Error("null payload in TodoItemsDispatchAction -> add");
+          }
+          return {
+              Items: state.Items,
+              IsBusy: false};
+      }
+      case TodoItemsActionType.Delete: {
+          if (action.payload != null) {
+              state.Items = state.Items.filter(item => item !== action.payload);
+          } else {
+              throw new Error("null payload in TodoItemsDispatchAction -> delete");
+          }
+          return state;
+      }
+  }
+};
+
 const App: React.FC = () => {
   return (
-    <TodoItemsContextProvider initialState={todoItemsContext}>
+    <TodoItemsContextProvider initialState={todoItemsContext} reducer={todoItemsReducer}>
     <Router>
       <div>
         <nav>

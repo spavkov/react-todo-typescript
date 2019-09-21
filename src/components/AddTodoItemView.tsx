@@ -1,18 +1,18 @@
-import React, {useState} from "react";
-import { useTodoItemsDispatch, TodoItemsDispatchAction, TodoItemsActionType } from "./context/TodoItemsContext";
+import React, {useState, useContext} from "react";
+import { TodoItemsContext, TodoItemsDispatchAction, TodoItemsActionType, IStateAndDispatcher } from "./context/TodoItemsContext";
 import { TodoItem } from "./model/TodoItem";
+import { ITodoItemsContext } from "./context/ITodoItemsContext";
 
 const AddTodoItem : React.FunctionComponent = () => {
 
     const [title, setTitle] = useState("");
-    const dispatch = useTodoItemsDispatch();
-
-    const action : TodoItemsDispatchAction = new TodoItemsDispatchAction(TodoItemsActionType.Add, new TodoItem(title, false));
+    const context : IStateAndDispatcher<ITodoItemsContext, TodoItemsDispatchAction> = useContext(TodoItemsContext);
 
     const handleSubmit = (event: any) => {
         event.preventDefault();
-        dispatch(action);
-        //props.addNewItemFunction(title);
+        if (context.Dispatcher) {
+            context.Dispatcher(new TodoItemsDispatchAction(TodoItemsActionType.Add, new TodoItem(title, false)));
+        }
         setTitle("");
     };
 
