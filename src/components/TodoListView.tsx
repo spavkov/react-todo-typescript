@@ -1,17 +1,20 @@
 import * as React from "react";
-import { TodoItem } from "./model/TodoItem";
+import { useTodoItemsState } from "./context/TodoItemsContext";
+import { ITodoItemsContext } from "./context/ITodoItemsContext";
 import TodoItemView from "./TodoItemView";
 
-interface ITodoListViewProps {
-    Items: TodoItem[];
-}
+const TodoListView: React.FunctionComponent = () => {
 
-const TodoListView: React.FunctionComponent<ITodoListViewProps> = ({Items}) => {
+    const context : ITodoItemsContext | undefined = useTodoItemsState();
+
     return (
         <div>
-            {Items.map((item, index) => <TodoItemView Index={index} Item={item} /> )}
+            {
+            context != null && context.Items != null && context.Items.length > 0 ?
+            context.Items.map((item, index) => <TodoItemView Index={index} Item={item} /> ) : <div>"no items"</div>
+            }
         </div>
-    );
+        );
 };
 
 export default TodoListView;

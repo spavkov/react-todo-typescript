@@ -1,19 +1,19 @@
 import * as React from "react";
 import TodoListView from "../components/TodoListView";
-import { TodoItem } from "../components/model/TodoItem";
+import AddTodoItem from "../components/AddTodoItemView";
 
 interface IIndexProps {
     Title: string;
 }
 
-const IndexPage: React.FunctionComponent<IIndexProps> = ({Title}) => {
+const IndexPage: React.FunctionComponent<IIndexProps> = () => {
 
-    const items: TodoItem[] = [
-        new TodoItem("Item 1", false),
-        new TodoItem("Item 2", false),
-    ];
-
-    return (<TodoListView Items={items} />);
+    return (
+        <div>
+            <TodoListView />
+            <AddTodoItem />
+        </div>
+    );
 };
 
 export default IndexPage;
