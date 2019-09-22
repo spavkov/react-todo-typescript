@@ -11,9 +11,7 @@ enum TodoItemsActionType {
 }
 
 export class TodoItemsDispatchAction {
-    constructor(public type: TodoItemsActionType, public payload: TodoItem | Guid | null)
-    {
-
+    constructor(public type: TodoItemsActionType, public payload: TodoItem | Guid | null) {
     }
 }
 
@@ -25,7 +23,8 @@ const todoItemsContext : ITodoItemsContext = {
     IsBusy: false,
   };
 
-const todoItemsReducer = (state: ITodoItemsContext, action: TodoItemsDispatchAction): ITodoItemsContext => {
+const todoItemsReducer :(state: ITodoItemsContext, action: TodoItemsDispatchAction) => ITodoItemsContext
+= (state: ITodoItemsContext, action: TodoItemsDispatchAction): ITodoItemsContext => {
     switch (action.type) {
         case TodoItemsActionType.Add: {
             if (action.payload as TodoItem != null) {
@@ -39,7 +38,7 @@ const todoItemsReducer = (state: ITodoItemsContext, action: TodoItemsDispatchAct
         }
         case TodoItemsActionType.Delete: {
             if (action.payload as Guid != null) {
-                const items = state.Items.filter(item => item.id !== action.payload as Guid);
+                const items: TodoItem[] = state.Items.filter(item => item.id !== action.payload as Guid);
                 return {
                     Items: items,
                     IsBusy : state.IsBusy
@@ -51,10 +50,8 @@ const todoItemsReducer = (state: ITodoItemsContext, action: TodoItemsDispatchAct
 
         case TodoItemsActionType.ToggleDone: {
             if (action.payload as Guid != null) {
-                for (let item of state.Items)
-                {
-                    if (item.id === (action.payload as Guid))
-                    {
+                for (let item of state.Items) {
+                    if (item.id === (action.payload as Guid)) {
                         item.done = item.done;
                     }
                 }
@@ -65,17 +62,18 @@ const todoItemsReducer = (state: ITodoItemsContext, action: TodoItemsDispatchAct
             } else {
                 throw new Error("null payload in TodoItemsDispatchAction -> delete");
             }
-        }        
+        }
     }
   };
 
-const TodoItemsContext = React.createContext<IStateAndDispatcher<ITodoItemsContext, TodoItemsDispatchAction>>(
+const TodoItemsContext : React.Context<IStateAndDispatcher<ITodoItemsContext, TodoItemsDispatchAction>>
+= React.createContext<IStateAndDispatcher<ITodoItemsContext, TodoItemsDispatchAction>>(
     {State : {
         Items: [],
         IsBusy: false
     }, Dispatcher : null});
 
-function TodoItemsContextProvider(props : IGenericContextProps) {
+function TodoItemsContextProvider(props : IGenericContextProps): JSX.Element {
     const [state, dispatch] = React.useReducer(todoItemsReducer, todoItemsContext);
     return (<TodoItemsContext.Provider value={{State: state, Dispatcher: dispatch}}>
             {props.children}
