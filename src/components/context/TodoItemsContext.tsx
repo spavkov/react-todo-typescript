@@ -52,7 +52,7 @@ const todoItemsReducer :(state: ITodoItemsContext, action: TodoItemsDispatchActi
             if (action.payload as Guid != null) {
                 for (let item of state.Items) {
                     if (item.id === (action.payload as Guid)) {
-                        item.done = item.done;
+                        item.done = !item.done;
                     }
                 }
                 return {

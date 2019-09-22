@@ -1,7 +1,7 @@
 import React from "react";
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import "./App.css";
-import IndexPage from "./pages/IndexPage";
+import TodosPage from "./pages/TodosPage";
 import AboutPage from "./pages/AboutPage";
 import { TodoItemsContextProvider } from "./components/context/TodoItemsContext";
 
@@ -13,7 +13,7 @@ const App: React.FC = () => {
         <nav>
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/">Todo's</Link>
             </li>
             <li>
               <Link to="/about/">About</Link>
@@ -21,7 +21,7 @@ const App: React.FC = () => {
           </ul>
         </nav>
 
-        <Route path="/" exact component={IndexPage} />
+        <Route path="/" exact component={TodosPage} />
         <Route path="/about/" component={AboutPage} />
       </div>
     </Router>
